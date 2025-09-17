@@ -80,6 +80,25 @@ void displayStudentById(const std::vector<Student> &database)
     }
 }
 
+// Функция для удаления студента из базы данных
+void deleteStudent(std::vector<Student> &database)
+{
+    int id;
+    std::cout << "Введите ID студента для удаления: ";
+    std::cin >> id;
+
+    int index = findStudentById(database, id);
+    if (index != -1)
+    {
+        database.erase(database.begin() + index);
+        std::cout << "Студент с ID " << id << " удален из базы данных.\n";
+    }
+    else
+    {
+        std::cout << "Студент с ID " << id << " не найден.\n";
+    }
+}
+
 int main()
 {
     std::vector<Student> database;
@@ -92,6 +111,7 @@ int main()
         std::cout << "2. Вывести список студентов\n";
         std::cout << "3. Удалить студента\n";
         std::cout << "4. Найти студента по ID\n";
+        std::cout << "5. Удалить студента по ID\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
         std::cin >> choice;
@@ -106,6 +126,9 @@ int main()
             break;
         case 4:
             displayStudentById(database);
+            break;
+        case 5:
+            deleteStudent(database);
             break;
         case 0:
             std::cout << "Выход из программы.\n";
