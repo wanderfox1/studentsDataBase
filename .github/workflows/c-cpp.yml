@@ -1,0 +1,67 @@
+name: C/C++ CI (Make)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    name: Build & Test (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y build-essential clang-format
+
+      - name: Build (use Make if Makefile exists, otherwise compile default files)
+        run: |
+          if [ -f Makefile ] || [ -f makefile ]; then
+            echo "Makefile found — running make"
+            make
+          else
+            echo "No Makefile found — compiling default sources"
+            # compile test executable (non-fatal if file missing)
+            if [ -f test_main.cpp ]; then
+              g++ -std=c++17 -Wall -Wextra -Werror -O2 test_main.cpp -o test_main
+              echo "Compiled test_main.cpp -> ./test_main"
+            else
+              echo "test_main.cpp not found, skipping compilation of tests"
+            fi
+
+            # compile main interactive program (non-fatal if file missing)
+            if [ -f main.cpp ]; then
+              g++ -std=c++17 -Wall -Wextra -O2 main.cpp -o main
+              echo "Compiled main.cpp -> ./main"
+            else
+              echo "main.cpp not found, skipping compilation of main"
+            fi
+          fi
+
+      - name: Run tests (if available)
+        run: |
+          if [ -x ./test_main ]; then
+            echo "Running unit tests: ./test_main"
+            ./test_main
+          else
+            echo "No test executable found (./test_main) — skipping tests"
+          fi
+
+      - name: Run clang-format check (non-failing)
+        run: |
+          if command -v clang-format >/dev/null 2>&1 && ls *.cpp >/dev/null 2>&1; then
+            echo "Running clang-format --dry-run for .cpp files"
+            for f in *.cpp; do
+              echo "Checking $f"
+              clang-format -output-replacements-xml "$f" | grep -q "<replacement " \
+                && echo "Formatting suggestions for $f" \
+                || echo "$f is formatted"
+            done
+          else
+            echo "clang-format not available or no .cpp files — skipping"
+          fi
