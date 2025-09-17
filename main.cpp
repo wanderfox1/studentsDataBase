@@ -2,7 +2,9 @@
 #include <vector>
 #include <string>
 
-struct Student {
+struct Student
+{
+    int id;
     std::string name;
     int age;
     std::string major;
@@ -10,8 +12,10 @@ struct Student {
 };
 
 // Функция для добавления студента в базу данных
-void addStudent(std::vector<Student>& database) {
+void addStudent(std::vector<Student> &database)
+{
     Student student;
+    student.id = database.size() + 1;
     std::cout << "Введите имя студента: ";
     std::cin >> student.name;
     std::cout << "Введите возраст студента: ";
@@ -22,13 +26,16 @@ void addStudent(std::vector<Student>& database) {
     std::cin >> student.gpa;
 
     database.push_back(student);
-    std::cout << "Студент добавлен в базу данных.\n";
+    std::cout << "Студент добавлен в базу данных с ID: " << student.id << "\n";
 }
 
 // Функция для вывода всех студентов из базы данных
-void displayStudents(const std::vector<Student>& database) {
+void displayStudents(const std::vector<Student> &database)
+{
     std::cout << "Список студентов:\n";
-    for (const Student& student : database) {
+    for (const Student &student : database)
+    {
+        std::cout << "ID: " << student.id << "\n";
         std::cout << "Имя: " << student.name << "\n";
         std::cout << "Возраст: " << student.age << "\n";
         std::cout << "Специальность: " << student.major << "\n";
@@ -36,30 +43,34 @@ void displayStudents(const std::vector<Student>& database) {
     }
 }
 
-int main() {
+int main()
+{
     std::vector<Student> database;
 
     int choice;
-    do {
+    do
+    {
         std::cout << "Меню:\n";
         std::cout << "1. Добавить студента\n";
         std::cout << "2. Вывести список студентов\n";
+        std::cout << "3. Удалить студента\n";
         std::cout << "0. Выход\n";
         std::cout << "Выберите действие: ";
         std::cin >> choice;
 
-        switch (choice) {
-            case 1:
-                addStudent(database);
-                break;
-            case 2:
-                displayStudents(database);
-                break;
-            case 0:
-                std::cout << "Выход из программы.\n";
-                break;
-            default:
-                std::cout << "Неверный выбор. Попробуйте снова.\n";
+        switch (choice)
+        {
+        case 1:
+            addStudent(database);
+            break;
+        case 2:
+            displayStudents(database);
+            break;
+        case 0:
+            std::cout << "Выход из программы.\n";
+            break;
+        default:
+            std::cout << "Неверный выбор. Попробуйте снова.\n";
         }
     } while (choice != 0);
 
