@@ -101,6 +101,7 @@ int main()
 {
     std::vector<Student> database;
 
+    std::cout << "Вы лучший!:\n";
     int choice;
     do
     {
