@@ -14,12 +14,10 @@ struct Student
 
 int findStudentById(const std::vector<Student> &database, int id)
 {
-  for (int i = 0; i < database.size(); i++)
+  for (size_t i = 0; i < database.size(); i++)
   {
     if (database[i].id == id)
-    {
-      return i;
-    }
+      return static_cast<int>(i);
   }
   return -1;
 }
